@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\Render texture\Assets\GameManager.cs">
+    <Files>
+      <File FileName="..\Render texture\Assets\Piece.cs" Line="13" Column="55" />
+      <File FileName="..\Render texture\Assets\GameManager.cs" Line="41" Column="6" />
+      <File FileName="..\Render texture\Assets\Float.cs" Line="19" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

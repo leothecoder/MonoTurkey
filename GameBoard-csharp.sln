@@ -1,0 +1,45 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{0569D268-53EF-646D-67FB-75573BB99FFC}") = "GameBoard", "Assembly-CSharp-firstpass-vs.csproj", "{B53A7B28-1001-0185-04AA-D7D66C8F53DF}"
+EndProject
+Project("{0569D268-53EF-646D-67FB-75573BB99FFC}") = "GameBoard", "Assembly-CSharp-vs.csproj", "{85AEF280-01F2-561D-9FB1-03CECE0F06B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B53A7B28-1001-0185-04AA-D7D66C8F53DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B53A7B28-1001-0185-04AA-D7D66C8F53DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B53A7B28-1001-0185-04AA-D7D66C8F53DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B53A7B28-1001-0185-04AA-D7D66C8F53DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85AEF280-01F2-561D-9FB1-03CECE0F06B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85AEF280-01F2-561D-9FB1-03CECE0F06B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85AEF280-01F2-561D-9FB1-03CECE0F06B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85AEF280-01F2-561D-9FB1-03CECE0F06B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+																																				GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+	EndGlobalSection
+
+EndGlobal
