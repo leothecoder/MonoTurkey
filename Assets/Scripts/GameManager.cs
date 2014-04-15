@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
-
+	
+	public GUISkin gameBoardSkin ;
 	public GameObject userPlayerPrefab; 
 	public GameObject[] pieces = new GameObject[10];
 	public GameObject[] piecesSpinning = new GameObject[10];
@@ -99,6 +100,10 @@ public class GameManager : MonoBehaviour {
 	public string innerText = "";
 	void OnGUI() {
 		
+		if (gameBoardSkin != null) {
+			GUI.skin = gameBoardSkin;
+		}  
+
 		//here, draw background image on the screen
 		GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), backgroundImage);  
 
@@ -109,12 +114,12 @@ public class GameManager : MonoBehaviour {
 		switch(currentAction){
 
 			case "alertWhichPlayerBegins": 
-				GUI.Box (new Rect (left,top, wBox,hBox), "");
-				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.Box (new Rect (left,top, wBox,hBox),"", "dialog");
+				GUI.Box (new Rect (left+10,top+60, 90,90), "","piecespinning");
 				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
 				GUI.Label(new Rect(left+20, top+20, 120, 40), ""+players[currentPlayerIndex].name+" starts first");
 			
-				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40), "Ok")) {
+				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40),"", "ok")) {
 					navigateNextAction("waitingToRollDice");
 					
 					switchDicesStateWaitinToRollDice();
@@ -124,10 +129,10 @@ public class GameManager : MonoBehaviour {
 				break;
 				
 			case "waitingToRollDice": 
-				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
-				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name, "dialog");
+				GUI.Box (new Rect (left+10,top+60, 90,90), "","piecespinning");
 				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
-				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40), "Roll Dice")) {
+				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40),"", "rolldice")) {
 
 					Dice.waitingToRoolDice = false;
 					Dice.switchGravity(true);
@@ -140,30 +145,30 @@ public class GameManager : MonoBehaviour {
 				break;
 				
 			case "waitingToMovePiece": 
-				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
-				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name, "dialog");
+				GUI.Box (new Rect (left+10,top+60, 90,90), "","piecespinning");
 				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
-				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Move Piece")) {
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "", "move")) {
 					moveCurrent();
 					currentAction = "";	//set null to display none of boxes on screen
 				}
 					
 				break;
 			case "waitingPlayerToTakeAction":
-				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name, "dialog");
 				GUI.Label(new Rect(left+20, top+20, 120, 60), "Buy, Pay rent etc actions will hold on in this window.");
 				
-				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Done")) {
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "", "done")) {
 					
 					currentAction = "waitingToFinishTurn";	
 				}
 
 				break;
 			case "waitingToFinishTurn": 
-				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
-				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name,"dialog");
+				GUI.Box (new Rect (left+10,top+60, 90,90), "","piecespinning");
 				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
-				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Finish Turn")) {
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "", "finishturn")) {
 					nextTurn();
 					innerText += "Player "+(currentPlayerIndex+1) +"'s Turn\n";
 					currentAction="waitingToRollDice";
@@ -178,14 +183,14 @@ public class GameManager : MonoBehaviour {
 			if( i<numberOfPlayers){
 				if(i==currentPlayerIndex){
 					bHeight = 250;
-					GUI.Box(new Rect (Screen.width-300, 10 + ((i)*50), 300, bHeight),players[currentPlayerIndex].name);
+					GUI.Box(new Rect (Screen.width-300, 10 + ((i)*50), 300, bHeight),players[i].name);
 				}else{
 					//calculate top 
 					float topPanel = 10 + ((i)*50);
 					if(bHeight > 0)
 						topPanel = 10 + ((i)*50)+bHeight-50;
 
-					GUI.Button(new Rect (Screen.width-300, topPanel, 300, 50), players[currentPlayerIndex].name);
+					GUI.Button(new Rect (Screen.width-300, topPanel, 300, 50), players[i].name);
 				}
 			}else{
 				//calculate top 		
