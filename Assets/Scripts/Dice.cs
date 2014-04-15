@@ -10,7 +10,8 @@ public class Dice : MonoBehaviour {
 
 	GameObject dice1;
 	GameObject dice2;
-
+	public static bool gravityIsOn = true;
+	public static bool waitingToRoolDice=false;
 
 //	int s=0;
 
@@ -22,9 +23,19 @@ public class Dice : MonoBehaviour {
 		
 		dice1 = GameObject.Find ("Dice1");
 		dice2 = GameObject.Find ("Dice2");
-		RollDice ();
-		GameManager.rolling = true;
+		switchGravity (false);
+//		RollDice ();
+//		GameManager.rolling = true;
 
+	}
+
+	public static void switchGravity(bool val){
+		gravityIsOn = val;
+		
+		GameObject dice1 = GameObject.Find ("Dice1");
+		GameObject dice2 = GameObject.Find ("Dice2");
+		dice1.rigidbody.useGravity = val;
+		dice2.rigidbody.useGravity = val;
 	}
 
 	int CalcSideUp() {
@@ -46,7 +57,7 @@ public class Dice : MonoBehaviour {
 	void Update() {
 
 		if (GameManager.rolling) {
-			
+
 //			dice1 = GameObject.Find ("Dice1");
 //			dice2 = GameObject.Find ("Dice2");
 			if ( rigidbody.IsSleeping() && rigidbody.velocity.magnitude == 0 && rigidbody.velocity.sqrMagnitude < .01f && rigidbody.angularVelocity.sqrMagnitude < .01f ){
@@ -56,11 +67,22 @@ public class Dice : MonoBehaviour {
 				int res1 = diceResult (dice1);
 				int res2 = diceResult (dice2);
 				GameManager.rolling = false;
+				GameManager.navigateNextAction("waitingToMovePiece");
 
 				Debug.Log ("***Result of Dice1 is "+ res1 + " and Dice2 is "+res2 );
 				//Debug.Log ("rolling: "+GameManager.rolling.ToString ());
 			}
 		}
+		if (waitingToRoolDice) {
+			
+			dice1 = GameObject.Find ("Dice1");
+			dice2 = GameObject.Find ("Dice2");
+//			dice1.transform.rotation = Quaternion.LookRotation(Random.onUnitSphere);
+			//			dice2.transform.rotation = Quaternion.LookRotation(Random.onUnitSphere);
+			dice1.transform.Rotate(Vector3.right * Time.deltaTime*50f);
+			dice2.transform.Rotate(Vector3.right * Time.deltaTime*50f);
+		}
+
 	}
 
 	public void RollDice(){

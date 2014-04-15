@@ -6,6 +6,12 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject userPlayerPrefab; 
 	public GameObject[] pieces = new GameObject[10];
+	public GameObject[] piecesSpinning = new GameObject[10];
+	public Texture GameBoardCamera;
+	public Texture[] GameBoardCams = new Texture[4];
+	public Texture2D backgroundImage;
+	public Vector3 pLocation = new Vector3 (-30f, -0.5f, 3f);
+
 	public static int[] chosenPieces = new int[4];
 	public static string[] chosenNames = new string[4];
 
@@ -21,11 +27,18 @@ public class GameManager : MonoBehaviour {
 	static int secondMove;
 
 	public static bool rolling = false;
-	public static bool moving = false;
-	public static bool idle = false;
 
+	/*
+	 *	alertWhichPlayerBegins
+	 *	waitingToRollDice
+	 *	waitingToFinishTurn 
+	 *	waitingToMovePiece
+	 * 
+	 */
+	public static string currentAction ="alertWhichPlayerBegins";	
 
 	float w, h, wHalf, hHalf;
+	float wBox, hBox;
 
 	void Awake(){
 		
@@ -33,6 +46,8 @@ public class GameManager : MonoBehaviour {
 		h = Screen.height;
 		wHalf = w / 2;
 		hHalf = h / 2;
+		wBox = 240;
+		hBox = 180;
 
 	}
 
@@ -42,6 +57,7 @@ public class GameManager : MonoBehaviour {
 		initializeCellIndexes ();
 		generatePlayers ( numberOfPlayers );
 		determineCoordination ();
+
 	}
 
 	void initializeCellIndexes(){
@@ -63,46 +79,127 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
+
+	public static void navigateNextAction(string action){
+		currentAction = action;
+	}
+
+	public void switchDicesStateWaitinToRollDice(){
+
+		Dice.switchGravity (false);
+
+		GameObject dice1 = GameObject.Find ("Dice1");
+		GameObject dice2 = GameObject.Find ("Dice2");
+		dice1.transform.position = new Vector3(0f,4f,1.5f);
+		dice2.transform.position = new Vector3(1f,4f,1.5f);
+		Dice.waitingToRoolDice = true;
+	}
 	
 	private Vector2 scrollViewVector = Vector2.zero;
 	public string innerText = "";
 	void OnGUI() {
-		GUI.Label(new Rect(10, 10, 200, 20), "Let's Go Team#12");
-		// Make a background box
-		GUI.Box (new Rect (10,40,100,120), "Actions Menu");
 		
-		// Make the first button. 
-		if (GUI.Button (new Rect (20,70,80,20), "Roll Dice")) {
-			dice = new Dice();
-			dice.RollDice();
-			rolling = true;
-			innerText += "Player"+currentPlayerIndex +" rolled dice\n";
-		}	
-		
-		// Make the second button.
-		if (GUI.Button (new Rect (20,100,80,20), "Move")) {
-//			dice = new Dice();
-//			dice.move();
-			moveCurrent();
-		}
-		
-		// Make the third button.
-		if (GUI.Button (new Rect (20,130,80,20), "Next Turn")) {
-			nextTurn();
-			innerText += "Player "+(currentPlayerIndex+1) +"'s Turn\n";
+		//here, draw background image on the screen
+		GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), backgroundImage);  
+
+		GUI.DrawTexture (new Rect (5, 5, w * 0.7f, h - 50), GameBoardCamera);
+
+		float left = wHalf - (wHalf*0.5f) - (wBox * 0.3f),
+		top = hHalf - (hBox * 0.3f);
+		switch(currentAction){
+
+			case "alertWhichPlayerBegins": 
+				GUI.Box (new Rect (left,top, wBox,hBox), "");
+				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
+				GUI.Label(new Rect(left+20, top+20, 120, 40), ""+players[currentPlayerIndex].name+" starts first");
+			
+				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40), "Ok")) {
+					navigateNextAction("waitingToRollDice");
+					
+					switchDicesStateWaitinToRollDice();
+
+				}
+				
+				break;
+				
+			case "waitingToRollDice": 
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
+				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
+				if (GUI.Button (new Rect (left+120, hHalf+40, 100,40), "Roll Dice")) {
+
+					Dice.waitingToRoolDice = false;
+					Dice.switchGravity(true);
+					dice = new Dice();
+					dice.RollDice();
+					rolling = true;
+					currentAction = "";	//set null to display none of boxes on screen
+					innerText += "Player"+ (currentPlayerIndex+1) +" rolled dice\n";
+				}	
+				break;
+				
+			case "waitingToMovePiece": 
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
+				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Move Piece")) {
+					moveCurrent();
+					currentAction = "";	//set null to display none of boxes on screen
+				}
+					
+				break;
+			case "waitingPlayerToTakeAction":
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
+				GUI.Label(new Rect(left+20, top+20, 120, 60), "Buy, Pay rent etc actions will hold on in this window.");
+				
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Done")) {
+					
+					currentAction = "waitingToFinishTurn";	
+				}
+
+				break;
+			case "waitingToFinishTurn": 
+				GUI.Box (new Rect (left,top, wBox,hBox), ""+players[currentPlayerIndex].name);
+				GUI.Box (new Rect (left+10,top+60, 90,90), "");
+				GUI.DrawTexture (new Rect (left+10,top+60, 90,90), GameBoardCams[currentPlayerIndex]);
+				if (GUI.Button (new Rect (left+120, hHalf+40,100,40), "Finish Turn")) {
+					nextTurn();
+					innerText += "Player "+(currentPlayerIndex+1) +"'s Turn\n";
+					currentAction="waitingToRollDice";
+					switchDicesStateWaitinToRollDice();
+				}
+				break;
 		}
 
-		//ActionsBox ();
+		//drawing right side information panels
+		float bHeight = 0;
+		for (int i=0; i<=numberOfPlayers; i++) {
+			if( i<numberOfPlayers){
+				if(i==currentPlayerIndex){
+					bHeight = 250;
+					GUI.Box(new Rect (Screen.width-300, 10 + ((i)*50), 300, bHeight),players[currentPlayerIndex].name);
+				}else{
+					//calculate top 
+					float topPanel = 10 + ((i)*50);
+					if(bHeight > 0)
+						topPanel = 10 + ((i)*50)+bHeight-50;
+
+					GUI.Button(new Rect (Screen.width-300, topPanel, 300, 50), players[currentPlayerIndex].name);
+				}
+			}else{
+				//calculate top 		
+				float topPanel = 10 + ((i)*50);
+				if(bHeight > 0)
+					topPanel = 10 + ((i)*50)+bHeight-50;
+
+				GUI.Button(new Rect (Screen.width-300,  topPanel, 300, 50), "BANK");
+			}
+		}
 		
-		scrollViewVector = GUI.BeginScrollView (new Rect (0, h-200, 200, 200), scrollViewVector, new Rect (0, 0, 400, 400));
+		scrollViewVector = GUI.BeginScrollView (new Rect (Screen.width-300, h-200, 300, 200), scrollViewVector, new Rect (0, 0, 300, 400));
 		innerText = GUI.TextArea (new Rect (0, 0, 400, 400), innerText);
 		GUI.EndScrollView();
-	}
-
-	public void ActionsBox(){
-		float bWidth = 100, bHeight = 100;
-
-		GUI.Box (new Rect (wHalf- bWidth/2, hHalf - bHeight/2, bWidth, bWidth), ""+players[currentPlayerIndex].name);
 	}
 
 	// Update is called once per frame
@@ -179,10 +276,14 @@ public class GameManager : MonoBehaviour {
 		Player player;
 		Vector3 pos = cells [0];
 		for (int i = 0; i< numberOfPlayers; i++) {
-			player = ((GameObject)Instantiate (userPlayerPrefab,//pieces[chosenPieces[i]],//userPlayerPrefab,//chosenPieces[i], 
+			player = ((GameObject)Instantiate (pieces[chosenPieces[i]],//userPlayerPrefab,//userPlayerPrefab,//chosenPieces[i], 
 		  	  new Vector3 (pos.x, pos.y, pos.z), Quaternion.Euler (new Vector3 ()))).GetComponent<Player> ();
-			//player.name = GameSetup.names[i];
+			player.name = chosenNames[i];
 			players.Add (player);
+
+			//instantiate spining pieces
+			Instantiate (piecesSpinning[chosenPieces[i]],
+			             new Vector3 (pLocation.x-(i*20f), pLocation.y, pLocation.z), Quaternion.Euler (new Vector3 ()));
 		}
 	}
 

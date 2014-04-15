@@ -13,7 +13,6 @@ public class GameSetup : MonoBehaviour {
 	int[] flags = new int[4];		//used for pieces to determine selected or not
 	
 	//these are for pieces
-//	public Texture2D[] pieces = new Texture2D[4];
 	public string CurrentMenu;
 	public GameObject prefab;
 
@@ -29,44 +28,41 @@ public class GameSetup : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		/// 
+		/// Selects the current menu
+		/// 
 		CurrentMenu = "Main";
-		//set the flag values		
-//		for (int i=0; i<flags.Length; i++) {
-//			flags [i] = 0;				
-//		}
 
-		//load background image
+		//
+		//load background image from resources
+		//
 		image = (Texture2D)Resources.Load ("background-monopoly");
 
-//		for(int i=0 ; i< pieces.Length; i++)
-//			pieces[i] = GameObject.Find ("p"+i);
-
+		//
+		//Generates pieces to be selected for each players
+		//
 		generatePieces ();
-		Debug.Log (currentPieceIndexOnScene.ToString ());
 
-		for(int i = 0; i<numberOfPlayers; i++)
-			names[i] = "Player"+(i+1);
 	}
 
 	void generatePieces(){
+
 		for (int i = 0; i<numberOfPlayers; i++) {
-//		Vector3 pos = new Vector3(location.x, location.y, location.z);
-//		piecesOnScene[0] = ((GameObject)Instantiate (pieces [0], pos, Quaternion.identity));
-//		currentPieceIndexOnScene [0] = 0;
-//
-//		pos = new Vector3(location.x-20, location.y, location.z);
-//		piecesOnScene[1] = ((GameObject)Instantiate (pieces [1], pos, Quaternion.identity));
-//		currentPieceIndexOnScene [1] = 1;
-				
+
 			int nextPiece = nextPieceAvailable(i);
 			Vector3 pos = new Vector3(location.x-(i*20), location.y, location.z);
 			piecesOnScene[i] = ((GameObject)Instantiate (pieces [nextPiece], pos, Quaternion.identity));
 			currentPieceIndexOnScene [i] = nextPiece;
 			flagPieceNotUsed[nextPiece] = false;
 
+			//initialize player names
+			names[i] = "Player"+(i+1);
 		}
 	}
 
+	//<summary>
+	//	Finds and returns next piece available in order to be selected by user
+	//</summary>
 	int nextPieceAvailable(int ind){
 		int res = 0;
 		int i = 0;
@@ -80,8 +76,10 @@ public class GameSetup : MonoBehaviour {
 		}
 		return res;
 	}
-	
-	
+		
+	//<summary>
+	//	Finds and returns previous piece available in order to be selected by user
+	//</summary>
 	int prevPieceAvailable(int ind){
 		int res = 0;
 		int i = 0;
@@ -96,13 +94,6 @@ public class GameSetup : MonoBehaviour {
 			i++;
 		}
 		return res;
-	}
-
-	void destroyPieces(){
-		
-		for (int i = 0; i<numberOfPlayers; i++) 
-			Destroy (piecesOnScene [i]);
-
 	}
 
 	// Update is called once per frame
@@ -137,9 +128,7 @@ public class GameSetup : MonoBehaviour {
 	}
 	
 	private void Menu_Main ()
-	{
-		
-		
+	{			
 		//monopoly title
 		GUI.Button (new Rect ((Screen.width / 2 - 200), Screen.height / 2 - 200, 400, 100), "", "b1");
 		
@@ -187,7 +176,8 @@ public class GameSetup : MonoBehaviour {
 		if (GUI.Button (new Rect (Screen.width - 130, Screen.height - 50, 120, 40), "", "play")) {
 			//GameManager.pieces = pieces;
 			GameManager.chosenPieces = currentPieceIndexOnScene;
-//			GameManager.chosenNames = names;
+			GameManager.numberOfPlayers = numberOfPlayers;
+			GameManager.chosenNames = names;
 			Application.LoadLevel(1);	
 		}
 		
@@ -195,8 +185,7 @@ public class GameSetup : MonoBehaviour {
 		
 	}
 	
-	private void Menu_Settings ()
-	{
+	private void Menu_Settings (){
 		
 		
 	}
@@ -220,10 +209,11 @@ public class GameSetup : MonoBehaviour {
 		float startPoint = (Screen.width / 2) - (total / 2);
 
 		for (int i=0; i< numberOfPlayers; i++) {
-
-
-			GUI.Box (new Rect (startPoint + ((w + 20) * i), Screen.height / 2 - h / 2, w, h), "Player" + (i+1));
+			//panel and its label
+			GUI.Box (new Rect (startPoint + ((w + 20) * i), Screen.height / 2 - h / 2, w, h), names[i]);
 			GUI.Label (new Rect (startPoint + ((w + 20) * i) + 10, (Screen.height / 2 - h / 2) + 30, 40, 20), "Name");
+			
+			//player name text area
 			names[i] = GUI.TextArea (new Rect (startPoint + ((w + 20) * i) + 60, (Screen.height / 2 - h / 2) + 30, 100, 25), names[i], 25);
 			if (i > numberOfPlayers-2 && numberOfPlayers>2) {
 				if (GUI.Button (new Rect (startPoint + ((w + 20) * i) + 25 +15, (Screen.height / 2 - h / 2 + 30) + 40, 120, 40), "","remove")) {
@@ -240,17 +230,20 @@ public class GameSetup : MonoBehaviour {
 			if (numberOfPlayers < 4)
 				if (GUI.Button (new Rect (Screen.width / 2 - 85, Screen.height / 2 + h / 2 + 20, 120, 40),"", "addPlayer")) { 
 					//destroyPieces();
+					int ind = numberOfPlayers;
 					numberOfPlayers++;	
-					names[i] = "Player"+numberOfPlayers;
+					names[ind] = "Player"+numberOfPlayers;
 					//generatePieces();
 
 					int nextPiece = nextPieceAvailable(i);
-					Vector3 pos = new Vector3(location.x-(numberOfPlayers-1*20), location.y, location.z);
-					piecesOnScene[i] = ((GameObject)Instantiate (pieces [nextPiece], pos, Quaternion.identity));
-					currentPieceIndexOnScene [i] = nextPiece;
+					Vector3 pos = new Vector3(location.x-(ind*20), location.y, location.z);
+					piecesOnScene[ind] = ((GameObject)Instantiate (pieces [nextPiece], pos, Quaternion.identity));
+					currentPieceIndexOnScene [ind] = nextPiece;
 					flagPieceNotUsed[nextPiece] = false;
 				
 					Debug.Log (" : "+nextPiece);
+					
+
 				}
 
 
@@ -265,13 +258,7 @@ public class GameSetup : MonoBehaviour {
 			if(GUI.Button (new Rect ((pLeft - 35), pTop + 30, arrowW, arrowH), "", "lArrow")) {
 
 				Debug.Log ("Left Arrow no:"+(i+1));
-//				currentPieceIndexOnScene[i]--;
-//				if (currentPieceIndexOnScene[i] < 0)
-//					currentPieceIndexOnScene[i] = 0;
-//				else {
-//					GameObject.DestroyImmediate (pieces [currentPieceIndexOnScene[i]].gameObject, true);
-//					pieces [currentPieceIndexOnScene[i]] = ((GameObject)Instantiate (pieces [currentPieceIndexOnScene[i]], location, Quaternion.identity));
-				//				}
+
 				int currentPiece = currentPieceIndexOnScene[i];
 				int prevPiece = prevPieceAvailable(currentPiece);
 				Destroy(piecesOnScene[i]);
@@ -285,16 +272,6 @@ public class GameSetup : MonoBehaviour {
 			}
 
 			if(GUI.Button (new Rect ((pLeft + 105), pTop + 30, arrowW, arrowH), "", "rArrow")) {
-
-//				Debug.Log ("Right Arrow no:"+(i+1));
-//				currentPieceIndexOnScene[i]++;
-//				if (currentPieceIndexOnScene[i] >= pieces.Length)
-//					currentPieceIndexOnScene[i] = pieces.Length - 1;
-//				else {
-//					GameObject.DestroyImmediate (pieces [currentPieceIndexOnScene[i]].gameObject, true);
-//
-//					pieces [currentPieceIndexOnScene[i]] = ((GameObject)Instantiate (pieces [currentPieceIndexOnScene[i]], location, Quaternion.identity));
-//				}
 				
 				int currentPiece = currentPieceIndexOnScene[i];
 				int nextPiece = nextPieceAvailable(currentPiece);

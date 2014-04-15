@@ -29,6 +29,8 @@ public class Piece : Player {
 			//pos = transform.position;
 			if(  Vector3.Distance( transform.position, moveDestination ) <= 0.1f ){
 				move = false;
+				GameManager.navigateNextAction("waitingPlayerToTakeAction");
+
 			}
 		}
 		
