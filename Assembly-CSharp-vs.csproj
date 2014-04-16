@@ -51,6 +51,8 @@
      <Compile Include="Assets\Scripts\GameSetup.cs" />
      <Compile Include="Assets\Scripts\GameSetupManager.cs" />
      <Compile Include="Assets\Scripts\Hrules.cs" />
+     <Compile Include="Assets\Scripts\Lang.cs" />
+     <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
      <Compile Include="Assets\Scripts\ObjectLabel.cs" />
      <Compile Include="Assets\Scripts\Piece.cs" />
      <Compile Include="Assets\Scripts\PieceOnGameSetup.cs" />

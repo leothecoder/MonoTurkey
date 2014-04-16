@@ -7,8 +7,12 @@ public class Hrules : MonoBehaviour
 		
 
 
-		//***************************
-	   
+		/*
+	 	*
+	 	*	**************************House Rules Variables*************************
+	 	*									START
+	 	*
+	 	*/	   
 		private int turnLimit = 0;
 		private string rules = "";
 		private string defaultRules = "";
@@ -25,6 +29,12 @@ public class Hrules : MonoBehaviour
 		Texture2D title = null;
 		public 	int k = 10;
 		public int l = 60;
+		/*
+	 	*
+	 	*	**************************House Rules Variables*************************
+	 	*									END
+	 	*
+	 	*/
 		// Use this for initialization
 		void Start ()
 		{
@@ -42,21 +52,11 @@ public class Hrules : MonoBehaviour
 			
 						"  Salary:" + selStrings [toolbarInt [2]] + "   Mortgage rate:" + mortgageRate [toolbarInt [3]] + "   Luxury Tax:" + luxTax [toolbarInt [4]];
 
-
-
-
-			
-
-
-
-
 		}
 
 		void Awake ()
 		{
 
-			
-	
 		}
 		// Update is called once per frame
 		void Update ()
@@ -71,13 +71,6 @@ public class Hrules : MonoBehaviour
 			
 						GUI.skin = myStyle;
 				}
-
-
-
-				
-
-
-
 
 				int spaceRule = (int)b / 12 + 10;
 				GUI.Box (new Rect (0, 0, a, b), "", "background-s");
@@ -114,7 +107,7 @@ public class Hrules : MonoBehaviour
 		if (GUI.Button (new Rect ((a -a/6)-(a/16+10), b / 6 + 7 * spaceRule, a / 16, b / 15), "Back", "turnLimit")) {
 			//back only
 			Application.LoadLevel(0);	
-			
+			GameSetup.CurrentMenu = "Menu_PlayerProperties";			
 		}
 
 		//*********************************************
